@@ -5,16 +5,14 @@ const SignUp = () => {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
 
     const isFormValid = name.trim() !== '' && username.trim() !== '' && password.trim() !== '';
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setError('');
 
         if (!isFormValid) {
-            setError('Please fill in all fields');
+            alert('Please fill in all fields');
             return;
         }
 
@@ -38,8 +36,8 @@ const SignUp = () => {
             }
 
         } catch (err) {
-            setError(err.message);
             console.error('Signup error:', err);
+            alert(err.message);
         }
     };
 
