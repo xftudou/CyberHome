@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import './Form.css';
 
-axios.defaults.baseURL = process.env.APP_API_URL;
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 const SignUp = () => {
     const [name, setName] = useState('');
@@ -20,7 +21,7 @@ const SignUp = () => {
         }
 
         try {
-            const response = await axios.post(process.env.APP_API_URL + '/users/signup', {
+            const response = await axios.post('/users/signup', {
                 name,
                 username,
                 password
@@ -46,8 +47,8 @@ const SignUp = () => {
     return (
         <div className="form-container">
             <header className="form-header">
-                <a href="/" className="nav-link">&larr; BACK</a>
-                <a href="/login" className="nav-link">LOGIN</a>
+                <Link to="/" className="nav-link">&larr; BACK</Link>
+                <Link to="/login" className="nav-link">LOGIN</Link>
             </header>
             <div className="form-content">
                 <h1>Welcome to CyberHome</h1>
