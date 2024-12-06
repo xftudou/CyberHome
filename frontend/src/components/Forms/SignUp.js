@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './Form.css';
+require('dotenv').config({ path: '../.env' });
 
-axios.defaults.baseURL = 'http://localhost:8000/api';
+axios.defaults.baseURL = process.env.APP_API_URL;
 
 const SignUp = () => {
     const [name, setName] = useState('');
