@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './Form.css';
-require('dotenv').config({ path: '../.env' });
 
 axios.defaults.baseURL = process.env.APP_API_URL;
 
