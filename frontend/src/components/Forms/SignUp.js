@@ -5,8 +5,43 @@ const SignUp = () => {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
     const isFormValid = name.trim() !== '' && username.trim() !== '' && password.trim() !== '';
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setError('');
+
+        if (!isFormValid) {
+            setError('Please fill in all fields');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8000/api/users/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, username, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert('Signup successful!');
+            } else if (response.status === 409) {
+                alert(data.error);
+            } else {
+                alert(data.error || 'Failed to sign up');
+            }
+
+        } catch (err) {
+            setError(err.message);
+            console.error('Signup error:', err);
+        }
+    };
 
     return (
         <div className="form-container">
@@ -16,7 +51,7 @@ const SignUp = () => {
             </header>
             <div className="form-content">
                 <h1>Welcome to CyberHome</h1>
-                <form className="form" onSubmit={(e) => e.preventDefault()}>
+                <form className="form" onSubmit={handleSubmit}>
                     <label htmlFor="name" className="form-label">NAME</label>
                     <input
                         type="text"

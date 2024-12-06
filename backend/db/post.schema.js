@@ -1,6 +1,6 @@
 const Schema = require('mongoose').Schema;
 
-exports.PokemonSchema = new Schema({
+exports.PostSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
