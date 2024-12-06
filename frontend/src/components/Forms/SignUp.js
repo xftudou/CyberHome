@@ -20,7 +20,7 @@ const SignUp = () => {
         }
 
         try {
-            const response = await axios.post('/users/signup', {
+            const response = await axios.post(process.env.APP_API_URL + '/users/signup', {
                 name,
                 username,
                 password
