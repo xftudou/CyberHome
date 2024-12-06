@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import './Form.css';
 
 const SignUp = () => {
-    const [firstname, setFirstname] = useState('');
-    const [lastname, setLastname] = useState('');
+    const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const isFormValid = firstname.trim() !== '' && lastname.trim() !== '' && username.trim() !== '' && password.trim() !== '';
+    const isFormValid = name.trim() !== '' && username.trim() !== '' && password.trim() !== '';
 
     return (
         <div className="form-container">
@@ -18,24 +17,14 @@ const SignUp = () => {
             <div className="form-content">
                 <h1>Welcome to CyberHome</h1>
                 <form className="form" onSubmit={(e) => e.preventDefault()}>
-                    <label htmlFor="firstname" className="form-label">FIRST NAME</label>
+                    <label htmlFor="name" className="form-label">NAME</label>
                     <input
                         type="text"
-                        id="firstname"
+                        id="name"
                         className="form-input"
-                        placeholder="Enter your first name"
-                        value={firstname}
-                        onChange={(e) => setFirstname(e.target.value)}
-                    />
-
-                    <label htmlFor="lastname" className="form-label">LAST NAME</label>
-                    <input
-                        type="text"
-                        id="lastname"
-                        className="form-input"
-                        placeholder="Enter your last name"
-                        value={lastname}
-                        onChange={(e) => setLastname(e.target.value)}
+                        placeholder="Enter your name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                     />
 
                     <label htmlFor="username" className="form-label">USERNAME</label>

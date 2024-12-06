@@ -2,9 +2,6 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
-// const postRouter = require('./routes/posts');
-// app.use('/api/posts', postRouter);
-
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 
