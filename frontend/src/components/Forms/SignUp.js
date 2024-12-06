@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './Form.css';
+
+axios.defaults.baseURL = 'http://localhost:8000/api';
 
 const SignUp = () => {
     const [name, setName] = useState('');
@@ -17,27 +20,26 @@ const SignUp = () => {
         }
 
         try {
-            const response = await fetch('/api/users/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name, username, password })
+            const response = await axios.post('/users/signup', {
+                name,
+                username,
+                password
             });
 
-            const data = await response.json();
-
-            if (response.ok) {
+            if (response.status === 201) {
                 alert('Signup successful!');
-            } else if (response.status === 409) {
-                alert(data.error);
-            } else {
-                alert(data.error || 'Failed to sign up');
             }
 
         } catch (err) {
+            if (err.response) {
+                alert(err.response.data.error || 'Failed to sign up');
+            } else if (err.request) {
+                alert('No response from server. Please try again later.');
+            } else {
+                alert('Error: ' + err.message);
+            }
+
             console.error('Signup error:', err);
-            alert(err.message);
         }
     };
 
