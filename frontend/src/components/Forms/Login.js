@@ -1,21 +1,46 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import './Form.css';
+import axios from 'axios';
+
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const isFormValid = username.trim() !== '' && password.trim() !== '';
+
+    const handleLogin = async (event) => {
+        event.preventDefault();
+        if (!isFormValid) return;
+
+        try {
+            const response = await axios.post('/users/login', {
+                username,
+                password
+            });
+
+            if (response.status === 200) {
+                navigate('/userpage');
+            } else {
+                alert('Failed to log in. Please check your credentials.');
+            }
+        } catch (error) {
+            alert('Login error:', error.response?.data?.message || 'Unexpected error occurred');
+        }
+    };
 
     return (
         <div className="form-container">
             <header className="form-header">
-                <a href="/" className="nav-link">&larr; BACK</a>
-                <a href="/signup" className="nav-link">SIGN UP</a>
+                <Link to="/" className="nav-link">&larr; BACK</Link>
+                <Link to="/signup" className="nav-link">SIGN UP</Link>
             </header>
             <div className="form-content">
                 <h1>Log into CyberHome</h1>
-                <form className="form" onSubmit={(e) => e.preventDefault()}>
+                <form className="form" onSubmit={handleLogin}>
                     <label htmlFor="username" className="form-label">USERNAME</label>
                     <input
                         type="text"
