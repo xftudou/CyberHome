@@ -35,6 +35,8 @@ router.post('/login', async (req, res) => {
             return res.status(404).send("User not found.");
         }
 
+        console.log('User found, proceeding with password verification');
+
         const match = await bcrypt.compare(password, user.password);
         if (match) {
             const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
