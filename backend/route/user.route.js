@@ -34,6 +34,7 @@ router.post('/login', async (req, res) => {
     try {
         const user = await UserModel.findUserByUsername(username);
         if (!user) {
+            console.log('User not found')
             return res.status(404).send("User not found.");
         }
 
@@ -43,7 +44,7 @@ router.post('/login', async (req, res) => {
         if (match) {
             const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
             res.cookie('token', token, { httpOnly: true, secure: true });
-            res.send("User logged in successfully.");
+            res.status(200).json({ message: "User logged in successfully.", username: user.username });
         } else {
             res.status(401).send("Invalid username or password.");
         }
@@ -74,11 +75,21 @@ router.get('/isLoggedIn', (req, res) => {
 
 router.get('/:username', async function (req, res) {
     const username = req.params.username;
+    try {
+        const userData = await UserModel.findUserByUsername(username);
+        if (!userData) {
+            res.status(404).send('User not found');
+        } else {
+            res.json(userData);
+        }
+    } catch (error) {
+        res.status(500).send('Server error');
+    }
 
-    const userData = await
-        UserModel.findUserByUsername(username);
+    // const userData = await
+    //     UserModel.findUserByUsername(username);
 
-    return res.send(userData);
+    // return res.send(userData);
 })
 
 module.exports = router

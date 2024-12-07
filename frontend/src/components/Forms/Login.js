@@ -23,7 +23,7 @@ const Login = () => {
             });
 
             if (response.status === 200) {
-                navigate('/userpage');
+                navigate(`/user/${response.data.username}`);
             } else {
                 alert('Failed to log in. Please check your credentials.');
             }
