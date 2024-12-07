@@ -79,17 +79,11 @@ router.get('/:username', async function (req, res) {
         const userData = await UserModel.findUserByUsername(username);
         if (!userData) {
             res.status(404).send('User not found');
-        } else {
-            res.json(userData);
         }
+        res.status(200).send({ name: user.name, username: user.username });
     } catch (error) {
         res.status(500).send('Server error');
     }
-
-    // const userData = await
-    //     UserModel.findUserByUsername(username);
-
-    // return res.send(userData);
 })
 
 module.exports = router

@@ -12,6 +12,7 @@ function UserPage() {
     useEffect(() => {
         axios.get(`/api/users/${username}`)
             .then(response => {
+                console.log(response.data);
                 setUser(response.data);
             })
             .catch(error => {
