@@ -29,6 +29,8 @@ router.post('/signup', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
+    console.log(req.body)
+
     try {
         const user = await UserModel.findUserByUsername(username);
         if (!user) {
@@ -46,6 +48,7 @@ router.post('/login', async (req, res) => {
             res.status(401).send("Invalid username or password.");
         }
     } catch (error) {
+        console.error('Login error:', error);
         res.status(500).send("Login error.");
     }
 });
