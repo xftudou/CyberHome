@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import './Form.css';
 import axios from 'axios';
 
+console.log('Base URL:', process.env.REACT_APP_API_URL);
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const isFormValid = username.trim() !== '' && password.trim() !== '';
 
@@ -22,12 +25,16 @@ const Login = () => {
                 password
             });
 
+            console.log('Login Response:', response.data);
             if (response.status === 200) {
+                login({ name: response.data.name, username: response.data.username });
                 navigate(`/user/${response.data.username}`);
             } else {
+                console.error('Login error:', response.data.message);
                 alert('Failed to log in. Please check your credentials.');
             }
         } catch (error) {
+            console.error('Login failed:', error);
             alert('Login error:', error.response?.data?.message || 'Unexpected error occurred');
         }
     };
