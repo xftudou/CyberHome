@@ -78,6 +78,9 @@ function UserPage() {
     };
 
     const handleDeletePost = async (postId) => {
+        const confirmed = window.confirm("Are you sure you want to delete this post?");
+        if (!confirmed) return;
+
         try {
             await axios.delete(`/posts/${username}/posts/${postId}`);
             setUserData(prev => ({
@@ -114,48 +117,57 @@ function UserPage() {
 
     return (
         <div className='userpage'>
-            <h1 className='userpage__username'>{userData.name}</h1>
+            <div className='info'>
+                <h1 className='name'>{userData.name}</h1>
+                <h4 className='username'>@{userData.username}</h4>
 
-            {joinedAt && (
-                <p className='userpage__joined'>Joined: {new Date(joinedAt).toLocaleDateString()}</p>
-            )}
+                {joinedAt && (
+                    <p className='joined'>Joined: {new Date(joinedAt).toLocaleDateString()}</p>
+                )}
 
-            {isOwner ? (
-                <div className='userpage__description-section'>
-                    {isEditingDescription ? (
-                        <div>
-                            <textarea
-                                value={newDescription}
-                                onChange={e => setNewDescription(e.target.value)}
-                                className='description-textarea'
-                            />
-                            <button onClick={handleSaveDescription}>Save</button>
-                            <button onClick={handleCancelEditDescription}>Cancel</button>
-                        </div>
-                    ) : (
-                        <div>
-                            <p className='userpage__description'>{description || 'No description set.'}</p>
-                            <button onClick={handleEditDescription}>Edit Description</button>
-                        </div>
-                    )}
-                </div>
-            ) : (
-                description && description.trim() !== '' && (
-                    <p className='userpage__description'>{description}</p>
-                )
-            )}
+                {isOwner ? (
+                    <div className='description-section'>
+                        {isEditingDescription ? (
+                            <div>
+                                <textarea
+                                    value={newDescription}
+                                    onChange={e => setNewDescription(e.target.value)}
+                                    className='description-textarea'
+                                />
+                                <button onClick={handleSaveDescription}>Save</button>
+                                <button onClick={handleCancelEditDescription}>Cancel</button>
+                            </div>
+                        ) : (
+                            <div>
+                                <p className='description'>{description || 'No description set.'}</p>
+                                <button onClick={handleEditDescription}>Edit Description</button>
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    description && description.trim() !== '' && (
+                        <p className='description'>{description}</p>
+                    )
+                )}
+            </div>
 
             {isOwner && (
                 <div className='create-post-section'>
-                    <h3>Create a new post</h3>
                     <textarea
                         value={newPostContent}
                         onChange={(e) => setNewPostContent(e.target.value)}
                         placeholder="What's on your mind?"
                     />
-                    <button onClick={handleCreatePost}>Post</button>
+                    <button
+                        className={`post-button ${newPostContent ? 'active' : ''}`}
+                        onClick={handleCreatePost}
+                        disabled={!newPostContent}
+                    >
+                        Post
+                    </button>
                 </div>
-            )}
+            )
+            }
 
             <h2>Posts</h2>
             <ul className='posts-list'>
@@ -163,12 +175,14 @@ function UserPage() {
                     <li className='post-item' key={post._id}>
                         {editingPostId === post._id ? (
                             <>
-                                <textarea
-                                    value={editedContent}
-                                    onChange={e => setEditedContent(e.target.value)}
-                                />
-                                <button onClick={handleSaveEdit}>Save</button>
-                                <button onClick={handleCancelEdit}>Cancel</button>
+                                <div className='post-edit-area'>
+                                    <textarea
+                                        value={editedContent}
+                                        onChange={e => setEditedContent(e.target.value)}
+                                    />
+                                    <button onClick={handleSaveEdit}>Save</button>
+                                    <button onClick={handleCancelEdit}>Cancel</button>
+                                </div>
                             </>
                         ) : (
                             <>
@@ -176,8 +190,8 @@ function UserPage() {
                                 <small>{new Date(post.timestamp).toLocaleString()}</small>
                                 {isOwner && (
                                     <div className='post-actions'>
-                                        <button onClick={() => startEditingPost(post._id, post.content)}>Edit</button>
-                                        <button onClick={() => handleDeletePost(post._id)}>Delete</button>
+                                        <button className='edit-button' onClick={() => startEditingPost(post._id, post.content)}>Edit</button>
+                                        <button className='delete-button' onClick={() => handleDeletePost(post._id)}>Delete</button>
                                     </div>
                                 )}
                             </>
@@ -185,7 +199,7 @@ function UserPage() {
                     </li>
                 ))}
             </ul>
-        </div>
+        </div >
     );
 }
 
