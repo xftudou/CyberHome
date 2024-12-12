@@ -24,6 +24,7 @@ function deletePost(postId) {
 }
 
 module.exports = {
+    PostModel,
     createPost,
     findPostById,
     findAllPosts,

@@ -19,9 +19,10 @@ function UserPage() {
     const isOwner = user && user.username === username;
 
     useEffect(() => {
-        axios.get(`/api/users/${username}`)
+        axios.get(`/users/${username}`)
             .then(response => {
                 setUserData(response.data);
+                console.log(response.data)
             })
             .catch(error => {
                 console.error('Error fetching user data:', error);

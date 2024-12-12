@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const UserModel = require('../db/user.model');
-const PostModel = require('../db/post.model');
+const { PostModel } = require('../db/post.model');
 
 const router = express.Router();
 const saltRounds = 10;
@@ -70,7 +70,7 @@ router.get('/:username', async function (req, res) {
     try {
         const userData = await UserModel.findUserByUsername(username);
         if (!userData) {
-            res.status(404).send('User not found');
+            return res.status(404).send('User not found');
         }
 
         const posts = await PostModel.find({ user: userData._id }).sort({ timestamp: -1 });
