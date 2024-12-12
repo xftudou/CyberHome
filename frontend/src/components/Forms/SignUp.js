@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Form.css';
+import { useAuth } from '../../contexts/AuthContext';
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 const SignUp = () => {
+    const navigate = useNavigate();
+    const { login } = useAuth();
+
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -29,6 +33,8 @@ const SignUp = () => {
 
             if (response.status === 201) {
                 alert('Signup successful!');
+                login({ name: response.data.name, username: response.data.username });
+                navigate(`/user/${response.data.username}`);
             }
 
         } catch (err) {

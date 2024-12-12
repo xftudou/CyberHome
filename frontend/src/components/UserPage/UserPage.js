@@ -105,7 +105,7 @@ function UserPage() {
                 </div>
             )}
 
-            <h2>List of Posts</h2>
+            <h2>Posts</h2>
             <ul className='posts-list'>
                 {posts.map(post => (
                     <li className='post-item' key={post._id}>

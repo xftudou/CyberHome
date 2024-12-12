@@ -17,8 +17,17 @@ router.post('/signup', async (req, res) => {
 
     try {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        await UserModel.createUser({ name, username, password: hashedPassword });
-        res.status(201).json({ message: "User created successfully!" });
+        const user = await UserModel.createUser({ name, username, password: hashedPassword });
+
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
+        res.cookie('token', token, { httpOnly: true, secure: true });
+
+        return res.status(201).json({
+            message: "User created successfully!",
+            name: user.name,
+            username: user.username
+        });
+
     } catch (error) {
         if (error.code === 11000) {
             return res.status(409).json({ error: "Username already exists." });

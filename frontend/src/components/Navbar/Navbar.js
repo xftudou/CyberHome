@@ -24,7 +24,7 @@ function Navbar() {
                         <>
                             <li className="nav-item">
                                 <NavLink to={`/user/${user.username}`} className="nav-links">
-                                    {user.name}
+                                    {user.name.toUpperCase()}
                                 </NavLink>
                             </li>
                             <li className="nav-item">
