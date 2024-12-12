@@ -4,9 +4,6 @@ import { useAuth } from '../../contexts/AuthContext';
 import "./Navbar.css";
 
 function Navbar() {
-    const auth = useAuth();
-    console.log(auth);
-
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 

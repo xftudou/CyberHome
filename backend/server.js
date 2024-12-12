@@ -3,11 +3,14 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const mongoose = require('mongoose')
+const cookieParser = require('cookie-parser');
 
 const userRoutes = require('./route/user.route');
 const postRoutes = require('./route/post.route');
 
 const app = express();
+
+const authMiddleware = require('./middlewares/authMiddleware');
 
 const dbPassword = process.env.DB_PASSWORD;
 const mongoDBEndpoint = `mongodb+srv://Alina:${dbPassword}@cyberhome.4q9cw.mongodb.net/mydatabase?retryWrites=true&w=majority&appName=CyberHome`;
@@ -25,6 +28,8 @@ db.on('error', console.error.bind(console, 'Error connecting to MongoDB:'));
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 app.use(express.json());
+app.use(cookieParser());
+app.use(authMiddleware);
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/users', userRoutes);

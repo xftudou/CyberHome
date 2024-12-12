@@ -2,6 +2,7 @@ const express = require('express')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const UserModel = require('../db/user.model');
+const PostModel = require('../db/post.model');
 
 const router = express.Router();
 const saltRounds = 10;
@@ -9,7 +10,6 @@ const saltRounds = 10;
 router.post('/signup', async (req, res) => {
 
     const { name, username, password } = req.body;
-    console.log(req.body)
 
     if (!name || !username || !password) {
         return res.status(400).json({ error: "All fields are required." });
@@ -29,7 +29,6 @@ router.post('/signup', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    console.log(req.body)
 
     try {
         const user = await UserModel.findUserByUsername(username);
@@ -60,17 +59,10 @@ router.post('/signout', (req, res) => {
 });
 
 router.get('/isLoggedIn', (req, res) => {
-    const token = req.cookies.token;
-    if (!token) {
-        return res.status(401).send({ isLoggedIn: false });
+    if (!req.user) {
+        return res.status(401).json({ isLoggedIn: false });
     }
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        res.send({ isLoggedIn: true, userId: decoded.userId });
-    } catch (error) {
-        res.status(401).send({ isLoggedIn: false });
-    }
+    res.json({ isLoggedIn: true, userId: req.user._id });
 });
 
 router.get('/:username', async function (req, res) {
@@ -80,8 +72,15 @@ router.get('/:username', async function (req, res) {
         if (!userData) {
             res.status(404).send('User not found');
         }
-        res.status(200).send({ name: user.name, username: user.username });
+
+        const posts = await PostModel.find({ user: userData._id }).sort({ timestamp: -1 });
+        res.status(200).json({
+            name: userData.name,
+            username: userData.username,
+            posts: posts
+        });
     } catch (error) {
+        console.error('Error fetching user data:', error);
         res.status(500).send('Server error');
     }
 })

@@ -12,7 +12,7 @@ function findPostById(postId) {
 }
 
 function findAllPosts() {
-    return PostModel.find().populate('user').exec();
+    return PostModel.find().populate('user').sort({ timestamp: -1 }).exec();
 }
 
 function updatePost(postId, updateData) {

@@ -1,6 +1,6 @@
 const Schema = require('mongoose').Schema;
 
-exports.PostSchema = new Schema({
+const PostSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -15,3 +15,5 @@ exports.PostSchema = new Schema({
         required: true,
     }
 }, { collection: 'posts' });
+
+module.exports = { PostSchema };
