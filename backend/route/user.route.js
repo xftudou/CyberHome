@@ -86,12 +86,51 @@ router.get('/:username', async function (req, res) {
         res.status(200).json({
             name: userData.name,
             username: userData.username,
-            posts: posts
+            posts: posts,
+            description: userData.description,
+            joinedAt: userData.createdAt
         });
     } catch (error) {
         console.error('Error fetching user data:', error);
         res.status(500).send('Server error');
     }
 })
+
+function ensureUserMatches(req, res, next) {
+    if (!req.user) {
+        return res.status(401).json({ message: 'Not authenticated' });
+    }
+
+    if (req.user.username !== req.params.username) {
+        return res.status(403).json({ message: 'Not authorized' });
+    }
+    next();
+}
+
+router.put('/:username/description', ensureUserMatches, async (req, res) => {
+    const { username } = req.params;
+    const { description } = req.body;
+
+    if (description === undefined) {
+        return res.status(400).json({ error: 'Description is required.' });
+    }
+
+    try {
+        const userData = await UserModel.findUserByUsername(username);
+        if (!userData) {
+            return res.status(404).json({ error: 'User not found.' });
+        }
+
+        userData.description = description;
+        await userData.save();
+        return res.status(200).json({
+            message: 'Description updated successfully!',
+            description: userData.description
+        });
+    } catch (error) {
+        console.error('Error updating user description:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
 
 module.exports = router

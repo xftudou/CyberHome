@@ -12,6 +12,8 @@ function UserPage() {
     const [newPostContent, setNewPostContent] = useState('');
     const [editingPostId, setEditingPostId] = useState(null);
     const [editedContent, setEditedContent] = useState('');
+    const [isEditingDescription, setIsEditingDescription] = useState(false);
+    const [newDescription, setNewDescription] = useState('');
 
     const { username } = useParams();
     const { user } = useAuth();
@@ -22,7 +24,7 @@ function UserPage() {
         axios.get(`/users/${username}`)
             .then(response => {
                 setUserData(response.data);
-                console.log(response.data)
+                setNewDescription(response.data.description || '');
             })
             .catch(error => {
                 console.error('Error fetching user data:', error);
@@ -87,11 +89,61 @@ function UserPage() {
         }
     };
 
-    const { posts = [] } = userData;
+    const handleEditDescription = () => {
+        setIsEditingDescription(true);
+    };
+
+    const handleCancelEditDescription = () => {
+        setIsEditingDescription(false);
+        setNewDescription(description || '');
+    };
+
+    const handleSaveDescription = async () => {
+        try {
+            const response = await axios.put(`/users/${username}/description`, { description: newDescription });
+            if (response.status === 200) {
+                setUserData(prev => ({ ...prev, description: response.data.description }));
+                setIsEditingDescription(false);
+            }
+        } catch (error) {
+            console.error("Error updating description:", error);
+        }
+    };
+
+    const { posts = [], joinedAt, description } = userData;
 
     return (
         <div className='userpage'>
             <h1 className='userpage__username'>{userData.name}</h1>
+
+            {joinedAt && (
+                <p className='userpage__joined'>Joined: {new Date(joinedAt).toLocaleDateString()}</p>
+            )}
+
+            {isOwner ? (
+                <div className='userpage__description-section'>
+                    {isEditingDescription ? (
+                        <div>
+                            <textarea
+                                value={newDescription}
+                                onChange={e => setNewDescription(e.target.value)}
+                                className='description-textarea'
+                            />
+                            <button onClick={handleSaveDescription}>Save</button>
+                            <button onClick={handleCancelEditDescription}>Cancel</button>
+                        </div>
+                    ) : (
+                        <div>
+                            <p className='userpage__description'>{description || 'No description set.'}</p>
+                            <button onClick={handleEditDescription}>Edit Description</button>
+                        </div>
+                    )}
+                </div>
+            ) : (
+                description && description.trim() !== '' && (
+                    <p className='userpage__description'>{description}</p>
+                )
+            )}
 
             {isOwner && (
                 <div className='create-post-section'>
